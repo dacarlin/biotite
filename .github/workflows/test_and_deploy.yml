@@ -167,28 +167,3 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         path: dist/*.tar.gz
-
-
-  upload:
-    name: Upload to GitHub Releases & PyPI
-    permissions:
-      contents: write
-    needs: [test-and-build, make-sdist, test-interfaces, test-muscle5]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/download-artifact@v3
-      with:
-        name: artifact
-        path: dist
-    - name: List distributions to be uploaded
-      run: ls dist
-    - name: Upload to GitHub Releases
-      uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
-      if: github.event_name == 'release' && github.event.action == 'published'
-      with:
-        files: dist//*
-    - name: Upload to PyPI
-      uses: pypa/gh-action-pypi-publish@c7f29f7adef1a245bd91520e94867e5c6eedddcc
-      if: github.event_name == 'release' && github.event.action == 'published'
-      with:
-        password: ${{ secrets.PYPI_TOKEN }}
